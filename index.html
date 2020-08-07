@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@472&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@472&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./index.css" />
+    <title>Chess clock</title>
+  </head>
+  <body>
+    <div class="container">
+      <div id="list-games" class="list list--top">
+        <div id="one-minute-game" class="list__item list__item--selected">
+          1
+        </div>
+        <div id="five-minute-game" class="list__item">5</div>
+        <div id="ten-minute-game" class="list__item">10</div>
+      </div>
+      <div class="white">
+        <div class="white-time time">
+          1:00
+        </div>
+      </div>
+      <div class="black">
+        <div class="black-time time">
+          1:00
+        </div>
+      </div>
+      <div class="list list--bottom">
+        <div id="restart" class="list__item none">Restart</div>
+      </div>
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>
