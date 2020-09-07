@@ -1,3 +1,6 @@
+// TODO: Add submenu for more game settings for each player
+// TODO: Add checkbox for common or separate game settings for each player
+
 const left = document.querySelector(".white");
 const right = document.querySelector(".black");
 
@@ -5,63 +8,111 @@ const right = document.querySelector(".black");
 const blackTimeContainer = document.querySelector(".black-time");
 const whiteTimeContainer = document.querySelector(".white-time");
 
+const whiteListGames = document.querySelectorAll(
+  "#white-list-games > .list__item"
+);
+const blackListGames = document.querySelectorAll(
+  "#black-list-games > .list__item"
+);
 // RESTART
 const restart = document.querySelector("#restart");
 let isRestartVisible = false;
 const delay = 1000;
 
-// GAMES
-const listGames = document.querySelectorAll("#list-games > .list__item");
-const oneMinuteGame = document.querySelector("#one-minute-game");
-const fiveMinuteGame = document.querySelector("#five-minute-game");
-const tenMinuteGame = document.querySelector("#ten-minute-game");
-
-let startMinutes = 1;
-let time = startMinutes * 60;
+let blackStartMinutes = 1;
+let whiteStartMinutes = 1;
+let time = blackStartMinutes * 60;
 let isGameStarted = false;
+let isGameStartredForWhite = false;
+let isGameStartredForBlack = false;
 
 let whiteInterval;
 let isWhiteClockStarted = false;
-let whiteTime = time;
+let whiteTime = whiteStartMinutes * 60;
 
 let blackInterval;
 let isBlackClockStarted = false;
-let blackTime = time;
+let blackTime = blackStartMinutes * 60;
 
-const changeTime = (newTime) => {
-  startMinutes = newTime;
-  time = startMinutes * 60;
-  whiteTime = time;
-  blackTime = time;
-  whiteTimeContainer.innerHTML = `${Math.floor(time / 60)}:${time % 60}0`;
-  blackTimeContainer.innerHTML = `${Math.floor(time / 60)}:${time % 60}0`;
+const changeTime = (newTime, container) => {
+  const time = newTime * 60;
+  container.innerHTML = `${Math.floor(time / 60)}:${time % 60}0`;
+  return time;
 };
 
-for (const game of listGames) {
+for (const game of whiteListGames) {
   game.addEventListener("click", function () {
-    for (let i = 0; i < listGames.length; i++) {
-      if (listGames[i] === this) {
+    for (let i = 0; i < whiteListGames.length; i++) {
+      if (whiteListGames[i] === this) {
+        const value = this.innerHTML.trim();
         this.classList.add("list__item--selected");
-        changeTime(parseInt(this.innerHTML));
+        switch (value) {
+          case "1":
+          case "5":
+          case "10":
+            const newTime = changeTime(parseInt(value), whiteTimeContainer);
+            whiteTime = newTime;
+            whiteStartMinutes = newTime / 60;
+            break;
+
+          default:
+            console.log(`Sorry, there's no events for ${value}.`);
+        }
       } else {
         var toggleClass = "list__item list__item--selected";
-        if (listGames[i].className == toggleClass) {
-          listGames[i].classList.remove("list__item--selected");
+        if (whiteListGames[i].className == toggleClass) {
+          whiteListGames[i].classList.remove("list__item--selected");
         }
       }
     }
   });
 }
 
-function toggleClass(element) {
-  var toggleClass = "list__item list__item--selected";
+for (const game of blackListGames) {
+  game.addEventListener("click", function () {
+    for (let i = 0; i < blackListGames.length; i++) {
+      if (blackListGames[i] === this) {
+        const value = this.innerHTML.trim();
+        this.classList.add("list__item--selected");
+        switch (value) {
+          case "1":
+          case "5":
+          case "10":
+            const newTime = changeTime(parseInt(value), blackTimeContainer);
+            blackTime = newTime;
+            blackStartMinutes = newTime / 60;
+            break;
 
-  if (element.className == toggleClass) {
-    element.classList.remove("list__item--selected");
-  } else {
-    element.classList.add("list__item--selected");
-  }
+          default:
+            console.log(`Sorry, there's no events for ${value}.`);
+        }
+      } else {
+        var toggleClass = "list__item list__item--selected";
+        if (blackListGames[i].className == toggleClass) {
+          blackListGames[i].classList.remove("list__item--selected");
+        }
+      }
+    }
+  });
 }
+
+const hideGameMenu = () => {
+  for (const game of whiteListGames) {
+    game.style.display = "none";
+  }
+  for (const game of blackListGames) {
+    game.style.display = "none";
+  }
+};
+
+const showGameMenu = () => {
+  for (const game of whiteListGames) {
+    game.style.display = "inline-flex";
+  }
+  for (const game of blackListGames) {
+    game.style.display = "inline-flex";
+  }
+};
 
 function clearGame() {
   isGameStarted = false;
@@ -96,13 +147,19 @@ function updateBlackClock() {
 }
 
 function startGameForWhite() {
-  updateWhiteClock();
+  if (!isGameStartredForWhite) {
+    updateWhiteClock();
+    isGameStartredForWhite = true;
+  }
   whiteInterval = setInterval(updateWhiteClock, delay);
   isWhiteClockStarted = true;
 }
 
 function startGameForBlack() {
-  updateBlackClock();
+  if (!isGameStartredForBlack) {
+    updateBlackClock();
+    isGameStartredForBlack = true;
+  }
   blackInterval = setInterval(updateBlackClock, delay);
   isBlackClockStarted = true;
 }
@@ -128,9 +185,7 @@ left.addEventListener("click", () => {
   }
 
   if (isRestartVisible) {
-    for (const game of listGames) {
-      game.style.display = "none";
-    }
+    hideGameMenu();
   }
 
   if (isGameStarted) {
@@ -148,9 +203,7 @@ right.addEventListener("click", () => {
   }
 
   if (isRestartVisible) {
-    for (const game of listGames) {
-      game.style.display = "none";
-    }
+    hideGameMenu();
   }
 
   if (isGameStarted) {
@@ -163,11 +216,10 @@ right.addEventListener("click", () => {
 
 restart.addEventListener("click", () => {
   clearGame();
-  changeTime(startMinutes);
+  changeTime(blackStartMinutes, blackTimeContainer);
+  changeTime(whiteStartMinutes, whiteTimeContainer);
   restart.style.display = "none";
   isRestartVisible = false;
 
-  for (const game of listGames) {
-    game.style.display = "inline-flex";
-  }
+  showGameMenu();
 });
