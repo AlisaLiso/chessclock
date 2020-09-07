@@ -8,6 +8,7 @@ const whiteTimeContainer = document.querySelector(".white-time");
 // RESTART
 const restart = document.querySelector("#restart");
 let isRestartVisible = false;
+const delay = 1000;
 
 // GAMES
 const listGames = document.querySelectorAll("#list-games > .list__item");
@@ -95,13 +96,15 @@ function updateBlackClock() {
 }
 
 function startGameForWhite() {
+  updateWhiteClock();
+  whiteInterval = setInterval(updateWhiteClock, delay);
   isWhiteClockStarted = true;
-  whiteInterval = setInterval(updateWhiteClock, 1000);
 }
 
 function startGameForBlack() {
+  updateBlackClock();
+  blackInterval = setInterval(updateBlackClock, delay);
   isBlackClockStarted = true;
-  blackInterval = setInterval(updateBlackClock, 1000);
 }
 
 function updateClock() {
