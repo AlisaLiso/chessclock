@@ -14,6 +14,7 @@ const whiteListGames = document.querySelectorAll(
 const blackListGames = document.querySelectorAll(
   "#black-list-games > .list__item"
 );
+
 // RESTART
 const restart = document.querySelector("#restart");
 let isRestartVisible = false;
@@ -158,70 +159,6 @@ const showGameMenu = () => {
     game.style.display = "inline-flex";
   }
 };
-
-// function clearGame() {
-//   isGameStarted = false;
-//   clearInterval(whiteInterval);
-//   clearInterval(blackInterval);
-// }
-
-// function updateWhiteClock() {
-//   const minutes = Math.floor(whiteTime / 60);
-//   let seconds = whiteTime % 60;
-//   seconds = seconds < 10 ? `0${seconds}` : seconds;
-
-//   whiteTime--;
-//   whiteTimeContainer.innerHTML = `${minutes}:${seconds}`;
-
-//   if (whiteTime < 0) {
-//     clearGame();
-//   }
-// }
-
-// function updateBlackClock() {
-//   const minutes = Math.floor(blackTime / 60);
-//   let seconds = blackTime % 60;
-//   seconds = seconds < 10 ? `0${seconds}` : seconds;
-
-//   blackTime--;
-//   blackTimeContainer.innerHTML = `${minutes}:${seconds}`;
-
-//   if (blackTime < 0) {
-//     clearGame();
-//   }
-// }
-
-// function startGameForWhite() {
-//   if (!isGameStartredForWhite) {
-//     updateWhiteClock();
-//     isGameStartredForWhite = true;
-//   }
-//   whiteInterval = setInterval(updateWhiteClock, delay);
-//   isWhiteClockStarted = true;
-// }
-
-// function startGameForBlack() {
-//   if (!isGameStartredForBlack) {
-//     updateBlackClock();
-//     isGameStartredForBlack = true;
-//   }
-//   blackInterval = setInterval(updateBlackClock, delay);
-//   isBlackClockStarted = true;
-// }
-
-// function updateClock() {
-//   if (isWhiteClockStarted) {
-//     clearInterval(whiteInterval);
-//     isWhiteClockStarted = false;
-//     isBlackClockStarted = true;
-//     startGameForBlack();
-//   } else if (isBlackClockStarted) {
-//     clearInterval(blackInterval);
-//     isWhiteClockStarted = true;
-//     isBlackClockStarted = false;
-//     startGameForWhite();
-//   }
-// }
 
 function toggleRestart() {
   if (!isRestartVisible) {
