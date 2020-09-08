@@ -19,6 +19,57 @@ const restart = document.querySelector("#restart");
 let isRestartVisible = false;
 const delay = 1000;
 
+let initial = 60000;
+let initialBlack = 60000;
+let count = initial;
+let countBlack = initialBlack;
+let counter, counterBlack, initialMillis, initialMlsBlack;
+let currentPlayer = "white";
+
+function timer() {
+  if (count <= 0) {
+    clearInterval(counter);
+    return;
+  }
+  let current = Date.now();
+
+  count = count - (current - initialMillis);
+  initialMillis = current;
+  displayCount(count);
+}
+
+function timerBlack() {
+  if (countBlack <= 0) {
+    clearInterval(counterBlack);
+    return;
+  }
+  let current = Date.now();
+
+  countBlack = countBlack - (current - initialMlsBlack);
+  initialMlsBlack = current;
+  displayCountBlack(countBlack);
+}
+
+function displayCount(count) {
+  let res = count / 1000;
+  let minutes = Math.floor(res.toPrecision() / 60);
+  var sec = Math.floor(res.toPrecision()) % 60;
+
+  whiteTimeContainer.innerHTML = `${minutes > 9 ? minutes : "0" + minutes}:${
+    sec > 9 ? sec : sec + "0"
+  }`;
+}
+
+function displayCountBlack(count) {
+  let res = count / 1000;
+  let minutes = Math.floor(res.toPrecision() / 60);
+  var sec = Math.floor(res.toPrecision()) % 60;
+
+  blackTimeContainer.innerHTML = `${minutes > 9 ? minutes : "0" + minutes}:${
+    sec > 9 ? sec : sec + "0"
+  }`;
+}
+
 let blackStartMinutes = 1;
 let whiteStartMinutes = 1;
 let time = blackStartMinutes * 60;
@@ -34,12 +85,6 @@ let blackInterval;
 let isBlackClockStarted = false;
 let blackTime = blackStartMinutes * 60;
 
-const changeTime = (newTime, container) => {
-  const time = newTime * 60;
-  container.innerHTML = `${Math.floor(time / 60)}:${time % 60}0`;
-  return time;
-};
-
 for (const game of whiteListGames) {
   game.addEventListener("click", function () {
     for (let i = 0; i < whiteListGames.length; i++) {
@@ -50,9 +95,9 @@ for (const game of whiteListGames) {
           case "1":
           case "5":
           case "10":
-            const newTime = changeTime(parseInt(value), whiteTimeContainer);
-            whiteTime = newTime;
-            whiteStartMinutes = newTime / 60;
+            initial = parseInt(value) * 60 * 1000;
+            displayCount(initial);
+            count = initial;
             break;
 
           default:
@@ -78,9 +123,9 @@ for (const game of blackListGames) {
           case "1":
           case "5":
           case "10":
-            const newTime = changeTime(parseInt(value), blackTimeContainer);
-            blackTime = newTime;
-            blackStartMinutes = newTime / 60;
+            initialBlack = parseInt(value) * 60 * 1000;
+            displayCountBlack(initialBlack);
+            countBlack = initialBlack;
             break;
 
           default:
@@ -114,71 +159,71 @@ const showGameMenu = () => {
   }
 };
 
-function clearGame() {
-  isGameStarted = false;
-  clearInterval(whiteInterval);
-  clearInterval(blackInterval);
-}
+// function clearGame() {
+//   isGameStarted = false;
+//   clearInterval(whiteInterval);
+//   clearInterval(blackInterval);
+// }
 
-function updateWhiteClock() {
-  const minutes = Math.floor(whiteTime / 60);
-  let seconds = whiteTime % 60;
-  seconds = seconds < 10 ? `0${seconds}` : seconds;
+// function updateWhiteClock() {
+//   const minutes = Math.floor(whiteTime / 60);
+//   let seconds = whiteTime % 60;
+//   seconds = seconds < 10 ? `0${seconds}` : seconds;
 
-  whiteTime--;
-  whiteTimeContainer.innerHTML = `${minutes}:${seconds}`;
+//   whiteTime--;
+//   whiteTimeContainer.innerHTML = `${minutes}:${seconds}`;
 
-  if (whiteTime < 0) {
-    clearGame();
-  }
-}
+//   if (whiteTime < 0) {
+//     clearGame();
+//   }
+// }
 
-function updateBlackClock() {
-  const minutes = Math.floor(blackTime / 60);
-  let seconds = blackTime % 60;
-  seconds = seconds < 10 ? `0${seconds}` : seconds;
+// function updateBlackClock() {
+//   const minutes = Math.floor(blackTime / 60);
+//   let seconds = blackTime % 60;
+//   seconds = seconds < 10 ? `0${seconds}` : seconds;
 
-  blackTime--;
-  blackTimeContainer.innerHTML = `${minutes}:${seconds}`;
+//   blackTime--;
+//   blackTimeContainer.innerHTML = `${minutes}:${seconds}`;
 
-  if (blackTime < 0) {
-    clearGame();
-  }
-}
+//   if (blackTime < 0) {
+//     clearGame();
+//   }
+// }
 
-function startGameForWhite() {
-  if (!isGameStartredForWhite) {
-    updateWhiteClock();
-    isGameStartredForWhite = true;
-  }
-  whiteInterval = setInterval(updateWhiteClock, delay);
-  isWhiteClockStarted = true;
-}
+// function startGameForWhite() {
+//   if (!isGameStartredForWhite) {
+//     updateWhiteClock();
+//     isGameStartredForWhite = true;
+//   }
+//   whiteInterval = setInterval(updateWhiteClock, delay);
+//   isWhiteClockStarted = true;
+// }
 
-function startGameForBlack() {
-  if (!isGameStartredForBlack) {
-    updateBlackClock();
-    isGameStartredForBlack = true;
-  }
-  blackInterval = setInterval(updateBlackClock, delay);
-  isBlackClockStarted = true;
-}
+// function startGameForBlack() {
+//   if (!isGameStartredForBlack) {
+//     updateBlackClock();
+//     isGameStartredForBlack = true;
+//   }
+//   blackInterval = setInterval(updateBlackClock, delay);
+//   isBlackClockStarted = true;
+// }
 
-function updateClock() {
-  if (isWhiteClockStarted) {
-    clearInterval(whiteInterval);
-    isWhiteClockStarted = false;
-    isBlackClockStarted = true;
-    startGameForBlack();
-  } else if (isBlackClockStarted) {
-    clearInterval(blackInterval);
-    isWhiteClockStarted = true;
-    isBlackClockStarted = false;
-    startGameForWhite();
-  }
-}
+// function updateClock() {
+//   if (isWhiteClockStarted) {
+//     clearInterval(whiteInterval);
+//     isWhiteClockStarted = false;
+//     isBlackClockStarted = true;
+//     startGameForBlack();
+//   } else if (isBlackClockStarted) {
+//     clearInterval(blackInterval);
+//     isWhiteClockStarted = true;
+//     isBlackClockStarted = false;
+//     startGameForWhite();
+//   }
+// }
 
-left.addEventListener("click", () => {
+function toggleRestart() {
   if (!isRestartVisible) {
     restart.style.display = "block";
     isRestartVisible = true;
@@ -187,37 +232,50 @@ left.addEventListener("click", () => {
   if (isRestartVisible) {
     hideGameMenu();
   }
+}
 
+function startTheGame() {
   if (isGameStarted) {
-    updateClock();
+    if (isWhiteClockStarted) {
+      clearInterval(counter);
+      isWhiteClockStarted = false;
+      isBlackClockStarted = true;
+      initialMlsBlack = Date.now();
+      counterBlack = setInterval(timerBlack, 10);
+    } else if (isBlackClockStarted) {
+      clearInterval(counterBlack);
+      isWhiteClockStarted = true;
+      isBlackClockStarted = false;
+      initialMillis = Date.now();
+      counter = setInterval(timer, 10);
+    }
   } else {
+    toggleRestart();
+    clearInterval(counter);
+    initialMillis = Date.now();
     isGameStarted = true;
-    startGameForWhite();
+    isWhiteClockStarted = true;
+    counter = setInterval(timer, 10);
   }
+}
+
+displayCount(initial);
+displayCountBlack(initialBlack);
+
+left.addEventListener("click", () => {
+  startTheGame();
 });
 
 right.addEventListener("click", () => {
-  if (!isRestartVisible) {
-    restart.style.display = "block";
-    isRestartVisible = true;
-  }
-
-  if (isRestartVisible) {
-    hideGameMenu();
-  }
-
-  if (isGameStarted) {
-    updateClock();
-  } else {
-    isGameStarted = true;
-    startGameForWhite();
-  }
+  startTheGame();
 });
 
 restart.addEventListener("click", () => {
-  clearGame();
-  changeTime(blackStartMinutes, blackTimeContainer);
-  changeTime(whiteStartMinutes, whiteTimeContainer);
+  clearInterval(counter);
+  count = initial;
+  countBlack = initialBlack;
+  displayCount(count);
+  displayCountBlack(countBlack);
   restart.style.display = "none";
   isRestartVisible = false;
 
