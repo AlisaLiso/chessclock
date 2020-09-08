@@ -209,6 +209,7 @@ right.addEventListener("click", () => {
 
 restart.addEventListener("click", () => {
   clearInterval(counter);
+  clearInterval(counterBlack);
   count = initial;
   countBlack = initialBlack;
   displayCount(count);
