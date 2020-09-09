@@ -15,6 +15,13 @@
     <title>Chess clock</title>
   </head>
   <body>
+    <label for="multisettings" class="checkbox">
+      <p>Multisettings</p>
+      <input type="checkbox" name="Multisettings" id="multisettings" />
+      <div class="checkbox__custom">
+        <div class="checkbox__custom-box"></div>
+      </div>
+    </label>
     <div class="container">
       <div class="board">
         <div id="white-list-games" class="list list--top">
@@ -47,6 +54,15 @@
           <div class="black-time time">1:00</div>
         </div>
       </div>
+
+      <div id="list-games" class="list list--top">
+        <div id="one-minute-game" class="list__item list__item--selected">
+          1
+        </div>
+        <div id="five-minute-game" class="list__item">5</div>
+        <div id="ten-minute-game" class="list__item">10</div>
+      </div>
+
       <div class="list list--bottom">
         <div id="restart" class="list__item none">Restart</div>
       </div>

@@ -1,5 +1,5 @@
-// TODO: Add submenu for more game settings for each player
 // TODO: Add checkbox for common or separate game settings for each player
+// TODO: Add submenu for more game settings for each player
 
 const left = document.querySelector(".white");
 const right = document.querySelector(".black");
@@ -7,6 +7,8 @@ const right = document.querySelector(".black");
 // TIME
 const blackTimeContainer = document.querySelector(".black-time");
 const whiteTimeContainer = document.querySelector(".white-time");
+const multipleSettings = document.querySelector("#multisettings");
+const checkbox = document.querySelector(".checkbox");
 
 const whiteListGames = document.querySelectorAll(
   "#white-list-games > .list__item"
@@ -14,11 +16,14 @@ const whiteListGames = document.querySelectorAll(
 const blackListGames = document.querySelectorAll(
   "#black-list-games > .list__item"
 );
+const listGames = document.querySelectorAll("#list-games > .list__item");
 
 // RESTART
 const restart = document.querySelector("#restart");
 let isRestartVisible = false;
+let isShowSettingsForEachPlayer = false;
 
+let startGameInitial = 60000;
 let endGameInitial = 00000;
 let initial = 60000;
 let initialBlack = 60000;
@@ -137,12 +142,55 @@ for (const game of blackListGames) {
   });
 }
 
+for (const game of listGames) {
+  game.addEventListener("click", function () {
+    for (let i = 0; i < listGames.length; i++) {
+      if (listGames[i] === this) {
+        const value = this.innerHTML.trim();
+        this.classList.add("list__item--selected");
+        switch (value) {
+          case "1":
+          case "5":
+          case "10":
+            initialBlack = parseInt(value) * 60 * 1000;
+            displayCountBlack(initialBlack);
+            countBlack = initialBlack;
+            initial = parseInt(value) * 60 * 1000;
+            displayCount(initial);
+            count = initial;
+            break;
+
+          default:
+            console.log(`Sorry, there's no events for ${value}.`);
+        }
+      } else {
+        var toggleClass = "list__item list__item--selected";
+        if (listGames[i].className == toggleClass) {
+          listGames[i].classList.remove("list__item--selected");
+        }
+      }
+    }
+  });
+}
+
 const hideGameMenu = () => {
   for (const game of whiteListGames) {
     game.style.display = "none";
   }
   for (const game of blackListGames) {
     game.style.display = "none";
+  }
+};
+
+const hideMainGameMenu = () => {
+  for (const game of listGames) {
+    game.style.display = "none";
+  }
+};
+
+const showMainGameMenu = () => {
+  for (const game of listGames) {
+    game.style.display = "inline-flex";
   }
 };
 
@@ -182,6 +230,8 @@ function startTheGame() {
       counter = setInterval(timer, 10);
     }
   } else {
+    hideMainGameMenu();
+    checkbox.style.display = "none";
     toggleRestart();
     clearInterval(counter);
     initialMillis = Date.now();
@@ -191,14 +241,37 @@ function startTheGame() {
   }
 }
 
+function clearGameTimer() {
+  displayCount(startGameInitial);
+  displayCountBlack(startGameInitial);
+}
+
+function toggleMultipleSettings() {
+  if (!isShowSettingsForEachPlayer) {
+    clearGameTimer();
+    showGameMenu();
+    hideMainGameMenu();
+    isShowSettingsForEachPlayer = true;
+  } else if (isShowSettingsForEachPlayer) {
+    clearGameTimer();
+    hideGameMenu();
+    showMainGameMenu();
+    isShowSettingsForEachPlayer = false;
+  }
+}
+
 displayCount(initial);
 displayCountBlack(initialBlack);
+hideGameMenu();
 
 left.addEventListener("click", startTheGame);
 
 right.addEventListener("click", startTheGame);
 
+multipleSettings.addEventListener("click", toggleMultipleSettings);
+
 restart.addEventListener("click", () => {
+  showMainGameMenu();
   clearInterval(counter);
   clearInterval(counterBlack);
   count = initial;
@@ -209,7 +282,7 @@ restart.addEventListener("click", () => {
   isRestartVisible = false;
   isGameStarted = false;
 
-  showGameMenu();
   left.addEventListener("click", startTheGame);
   right.addEventListener("click", startTheGame);
+  checkbox.style.display = "inline-flex";
 });
