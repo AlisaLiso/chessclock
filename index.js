@@ -18,18 +18,24 @@ const blackListGames = document.querySelectorAll(
 // RESTART
 const restart = document.querySelector("#restart");
 let isRestartVisible = false;
-const delay = 1000;
 
+let endGameInitial = 00000;
 let initial = 60000;
 let initialBlack = 60000;
 let count = initial;
 let countBlack = initialBlack;
 let counter, counterBlack, initialMillis, initialMlsBlack;
-let currentPlayer = "white";
+let isGameStarted = false;
+let isGameStartredForWhite = false;
+let isGameStartredForBlack = false;
 
 function timer() {
   if (count <= 0) {
     clearInterval(counter);
+    count = endGameInitial;
+    displayCount(endGameInitial);
+    left.removeEventListener("click", startTheGame);
+    right.removeEventListener("click", startTheGame);
     return;
   }
   let current = Date.now();
@@ -42,6 +48,10 @@ function timer() {
 function timerBlack() {
   if (countBlack <= 0) {
     clearInterval(counterBlack);
+    countBlack = endGameInitial;
+    displayCountBlack(endGameInitial);
+    left.removeEventListener("click", startTheGame);
+    right.removeEventListener("click", startTheGame);
     return;
   }
   let current = Date.now();
@@ -57,7 +67,7 @@ function displayCount(count) {
   var sec = Math.floor(res.toPrecision()) % 60;
 
   whiteTimeContainer.innerHTML = `${minutes > 9 ? minutes : "0" + minutes}:${
-    sec > 9 ? sec : sec + "0"
+    sec > 9 ? sec : "0" + sec
   }`;
 }
 
@@ -67,24 +77,9 @@ function displayCountBlack(count) {
   var sec = Math.floor(res.toPrecision()) % 60;
 
   blackTimeContainer.innerHTML = `${minutes > 9 ? minutes : "0" + minutes}:${
-    sec > 9 ? sec : sec + "0"
+    sec > 9 ? sec : "0" + sec
   }`;
 }
-
-let blackStartMinutes = 1;
-let whiteStartMinutes = 1;
-let time = blackStartMinutes * 60;
-let isGameStarted = false;
-let isGameStartredForWhite = false;
-let isGameStartredForBlack = false;
-
-let whiteInterval;
-let isWhiteClockStarted = false;
-let whiteTime = whiteStartMinutes * 60;
-
-let blackInterval;
-let isBlackClockStarted = false;
-let blackTime = blackStartMinutes * 60;
 
 for (const game of whiteListGames) {
   game.addEventListener("click", function () {
@@ -199,13 +194,9 @@ function startTheGame() {
 displayCount(initial);
 displayCountBlack(initialBlack);
 
-left.addEventListener("click", () => {
-  startTheGame();
-});
+left.addEventListener("click", startTheGame);
 
-right.addEventListener("click", () => {
-  startTheGame();
-});
+right.addEventListener("click", startTheGame);
 
 restart.addEventListener("click", () => {
   clearInterval(counter);
@@ -216,6 +207,9 @@ restart.addEventListener("click", () => {
   displayCountBlack(countBlack);
   restart.style.display = "none";
   isRestartVisible = false;
+  isGameStarted = false;
 
   showGameMenu();
+  left.addEventListener("click", startTheGame);
+  right.addEventListener("click", startTheGame);
 });
