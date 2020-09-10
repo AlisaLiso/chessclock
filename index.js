@@ -1,4 +1,3 @@
-// TODO: Add checkbox for common or separate game settings for each player
 // TODO: Add submenu for more game settings for each player
 
 const left = document.querySelector(".white");
@@ -21,20 +20,29 @@ const listGames = document.querySelectorAll("#list-games > .list__item");
 // RESTART
 const restart = document.querySelector("#restart");
 let isRestartVisible = false;
+
+// GAME SETTINGS FOR EACH PLAYER
 let isShowSettingsForEachPlayer = false;
 
+// COMMON GAME SETTINGS
 let startGameInitial = 60000;
 let endGameInitial = 00000;
-let initial = 60000;
-let initialBlack = 60000;
-let count = initial;
-let countBlack = initialBlack;
-let counter, counterBlack, initialMillis, initialMlsBlack;
 let isGameStarted = false;
+
+// WHITE GAME SETTINGS
+let initial = 60000;
+let count = initial;
+let counter, initialMillis;
 let isGameStartredForWhite = false;
+
+// BLACK GAME SETTINGS
+let initialBlack = 60000;
+let counterBlack, initialMlsBlack;
+let countBlack = initialBlack;
 let isGameStartredForBlack = false;
 
-function timer() {
+// FOR WHITE COUNT REMAINING TIME / DISPLAY TIME / SET INITIALS IF TIMER REACHES ZERO
+function timerWhite() {
   if (count <= 0) {
     clearInterval(counter);
     count = endGameInitial;
@@ -50,6 +58,7 @@ function timer() {
   displayCount(count);
 }
 
+// FOR BLACK COUNT REMAINING TIME / DISPLAY TIME / SET INITIALS IF TIMER REACHES ZERO
 function timerBlack() {
   if (countBlack <= 0) {
     clearInterval(counterBlack);
@@ -66,6 +75,7 @@ function timerBlack() {
   displayCountBlack(countBlack);
 }
 
+// DISPLAY TIME FOR WHITE
 function displayCount(count) {
   let res = count / 1000;
   let minutes = Math.floor(res.toPrecision() / 60);
@@ -76,6 +86,7 @@ function displayCount(count) {
   }`;
 }
 
+// DISPLAY TIME FOR BLACK
 function displayCountBlack(count) {
   let res = count / 1000;
   let minutes = Math.floor(res.toPrecision() / 60);
@@ -86,6 +97,7 @@ function displayCountBlack(count) {
   }`;
 }
 
+// CHANGE IN GAME TIME FOR WHITE AND TOGGLE CLASS FOR SELECTED TIME
 for (const game of whiteListGames) {
   game.addEventListener("click", function () {
     for (let i = 0; i < whiteListGames.length; i++) {
@@ -114,6 +126,7 @@ for (const game of whiteListGames) {
   });
 }
 
+// CHANGE IN GAME TIME FOR BLACK AND TOGGLE CLASS FOR SELECTED TIME
 for (const game of blackListGames) {
   game.addEventListener("click", function () {
     for (let i = 0; i < blackListGames.length; i++) {
@@ -142,6 +155,7 @@ for (const game of blackListGames) {
   });
 }
 
+// CHANGE IN GAME TIME FOR BOTH BLACK AND WHITE AND TOGGLE CLASS FOR SELECTED TIME
 for (const game of listGames) {
   game.addEventListener("click", function () {
     for (let i = 0; i < listGames.length; i++) {
@@ -173,6 +187,7 @@ for (const game of listGames) {
   });
 }
 
+// HIDE FOR EACH, BLACK AND WHITE, GAME MENU
 const hideGameMenu = () => {
   for (const game of whiteListGames) {
     game.style.display = "none";
@@ -182,18 +197,21 @@ const hideGameMenu = () => {
   }
 };
 
+// HIDE COMMON GAME MENU
 const hideMainGameMenu = () => {
   for (const game of listGames) {
     game.style.display = "none";
   }
 };
 
+// SHOW COMMON GAME MENU
 const showMainGameMenu = () => {
   for (const game of listGames) {
     game.style.display = "inline-flex";
   }
 };
 
+// SHOW FOR EACH, BLACK AND WHITE, GAME MENU
 const showGameMenu = () => {
   for (const game of whiteListGames) {
     game.style.display = "inline-flex";
@@ -203,6 +221,7 @@ const showGameMenu = () => {
   }
 };
 
+// SHOW RESTART BUTTON AND HIDE FOR EACH, BLACK AND WHITE, GAME MENU
 function toggleRestart() {
   if (!isRestartVisible) {
     restart.style.display = "block";
@@ -211,9 +230,11 @@ function toggleRestart() {
 
   if (isRestartVisible) {
     hideGameMenu();
+    hideMainGameMenu();
   }
 }
 
+// START GAME
 function startTheGame() {
   if (isGameStarted) {
     if (isWhiteClockStarted) {
@@ -227,7 +248,7 @@ function startTheGame() {
       isWhiteClockStarted = true;
       isBlackClockStarted = false;
       initialMillis = Date.now();
-      counter = setInterval(timer, 10);
+      counter = setInterval(timerWhite, 10);
     }
   } else {
     hideMainGameMenu();
@@ -237,15 +258,17 @@ function startTheGame() {
     initialMillis = Date.now();
     isGameStarted = true;
     isWhiteClockStarted = true;
-    counter = setInterval(timer, 10);
+    counter = setInterval(timerWhite, 10);
   }
 }
 
+// DISPLAY START GAME TIME
 function clearGameTimer() {
   displayCount(startGameInitial);
   displayCountBlack(startGameInitial);
 }
 
+// SHOW AND HIDE GAME SETTINGS FOR EACH PLAYER
 function toggleMultipleSettings() {
   if (!isShowSettingsForEachPlayer) {
     clearGameTimer();
@@ -260,18 +283,16 @@ function toggleMultipleSettings() {
   }
 }
 
-displayCount(initial);
-displayCountBlack(initialBlack);
-hideGameMenu();
-
-left.addEventListener("click", startTheGame);
-
-right.addEventListener("click", startTheGame);
-
-multipleSettings.addEventListener("click", toggleMultipleSettings);
-
-restart.addEventListener("click", () => {
-  showMainGameMenu();
+// ON RESTART BUTTON SHOW SELECTED GAME MENU
+// CLEAR INTERVALS
+// RESET GAME SETTINGS
+// HIDE RESTART BUTTON
+function handleRestart() {
+  if (isShowSettingsForEachPlayer) {
+    showGameMenu();
+  } else {
+    showMainGameMenu();
+  }
   clearInterval(counter);
   clearInterval(counterBlack);
   count = initial;
@@ -285,4 +306,18 @@ restart.addEventListener("click", () => {
   left.addEventListener("click", startTheGame);
   right.addEventListener("click", startTheGame);
   checkbox.style.display = "inline-flex";
-});
+}
+
+// DISPLAY TIME AND HIDE GAME MENU FOR EACH PLAYER
+// AT THE START WILL BE WISIBLE ONLY COMMON GAME MENU
+displayCount(initial);
+displayCountBlack(initialBlack);
+hideGameMenu();
+
+left.addEventListener("click", startTheGame);
+
+right.addEventListener("click", startTheGame);
+
+multipleSettings.addEventListener("click", toggleMultipleSettings);
+
+restart.addEventListener("click", handleRestart);
